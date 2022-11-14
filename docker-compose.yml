@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+  rps-back:
+    container_name: rps-back
+    build:
+      context: "./rps-back"
+      target: dev
+    depends_on:
+      - mongo
+    volumes:
+      - ./rps-back:/app
+      - /app/node_modules
+    ports:
+      - ${BACKEND_HTTP_PORT}:${BACKEND_HTTP_PORT}
+      - ${BACKEND_SOCKET_PORT}:${BACKEND_SOCKET_PORT}
+    environment:
+      - HTTP_PORT=${BACKEND_HTTP_PORT}
+      - SOCKET_PORT=${BACKEND_SOCKET_PORT}
+  rps-client:
+    container_name: rps-client
+    build:
+      context: "./rps-client"
+      target: dev
+    volumes:
+      - ./rps-client:/app
+      - /app/node_modules
+    ports:
+      - "8080:4200"
+    environment:
+      - BACKEND_HTTP_PORT=${BACKEND_HTTP_PORT}
+      - BACKEND_SOCKET_PORT=${BACKEND_SOCKET_PORT}
+  mongo:
+    container_name: mongo
+    image: mongo
+    restart: always
+    environment:
+      REPLICA_BIND_HOST: mongo
+      INIT_WAIT_SEC: 3
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongo/data:/data/db
