@@ -6,7 +6,7 @@ async function bootstrap() {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const pkg = require('../package.json');
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   const config = new DocumentBuilder()
     .setTitle(pkg.name)
     .setDescription(pkg.description)
