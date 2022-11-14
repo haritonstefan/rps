@@ -7,10 +7,17 @@ async function bootstrap() {
   const pkg = require('../package.json');
 
   const app = await NestFactory.create(AppModule, { cors: true });
+
   const config = new DocumentBuilder()
     .setTitle(pkg.name)
     .setDescription(pkg.description)
     .setVersion(pkg.version)
+    .addBearerAuth({
+      name: 'JWT Auth',
+      type: 'http',
+      scheme: 'bearer',
+    })
+
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
