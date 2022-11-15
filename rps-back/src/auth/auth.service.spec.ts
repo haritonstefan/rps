@@ -37,9 +37,10 @@ describe('AuthService', () => {
       .spyOn(playersCollection, 'findOne')
       .mockImplementationOnce(() => Promise.resolve({ _id: oId }));
 
-    const userId = await service.login({ username: 'abc' });
+    const tokenResponse = await service.login({ username: 'abc' });
 
-    expect(userId).toEqual(oId.toString());
+    expect(tokenResponse).toHaveProperty('token');
+    expect(tokenResponse.token).toEqual(oId.toString());
     expect(spy).toHaveBeenCalledTimes(1);
 
     spy.mockRestore();
@@ -56,9 +57,10 @@ describe('AuthService', () => {
       .spyOn(playersCollection, 'insertOne')
       .mockImplementationOnce(() => Promise.resolve({}));
 
-    const userId = await service.login({ username: 'abc' });
+    const tokenResponse = await service.login({ username: 'abc' });
 
-    expect(userId).toEqual(oId.toString());
+    expect(tokenResponse).toHaveProperty('token');
+    expect(tokenResponse.token).toEqual(oId.toString());
     expect(findMock).toHaveBeenCalledTimes(2);
     expect(createMock).toHaveBeenCalledTimes(1);
 
@@ -73,9 +75,10 @@ describe('AuthService', () => {
       .spyOn(playersCollection, 'countDocuments')
       .mockImplementation(() => Promise.resolve(1));
 
-    const isValid = await service.validate(oId);
+    const validationResponse = await service.validate(oId);
 
-    expect(isValid).toBe(true);
+    expect(validationResponse).toHaveProperty('isValid');
+    expect(validationResponse.isValid).toBe(true);
     expect(countDocumentsMock).toHaveBeenCalledTimes(1);
 
     countDocumentsMock.mockRestore();
@@ -88,9 +91,10 @@ describe('AuthService', () => {
       .spyOn(playersCollection, 'countDocuments')
       .mockImplementation(() => Promise.resolve(0));
 
-    const isValid = await service.validate(oId);
+    const validationResponse = await service.validate(oId);
 
-    expect(isValid).toBe(false);
+    expect(validationResponse).toHaveProperty('isValid');
+    expect(validationResponse.isValid).toBe(false);
     expect(countDocumentsMock).toHaveBeenCalledTimes(1);
 
     countDocumentsMock.mockRestore();
@@ -102,9 +106,10 @@ describe('AuthService', () => {
       .spyOn(playersCollection, 'countDocuments')
       .mockImplementation(() => Promise.resolve(0));
 
-    const isValid = await service.validate(oId);
+    const validationResponse = await service.validate(oId);
+    expect(validationResponse).toHaveProperty('isValid');
 
-    expect(isValid).toBe(false);
+    expect(validationResponse.isValid).toBe(false);
     // it should not call the count documents if the id is invalid
     expect(countDocumentsMock).toHaveBeenCalledTimes(0);
 

@@ -1,0 +1,33 @@
+<button (click)='stopPolling.next(null)'>Stop refresh</button>
+<mat-list class='list-matches'>
+  <mat-list-item *ngFor='let match of matchList | async' class='match'>
+    <mat-grid-list cols='1' rowHeight='2:1'>
+      <mat-grid-tile>
+        <p> {{match.createdById}}</p>
+        <div *ngFor='let round of match.rounds'>
+          <p>{{round.number}}</p>
+        </div>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <mat-grid-list cols='3' rowHeight='2:1'>
+          <mat-grid-tile>
+            <button mat-fab color='primary' aria-label='Example icon button with a delete icon'>
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <button mat-fab color='accent' aria-label='Example icon button with a bookmark icon'>
+              <mat-icon>bookmark</mat-icon>
+            </button>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <button mat-fab color='warn' aria-label='Example icon button with a home icon'>
+              <mat-icon>home</mat-icon>
+            </button>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </mat-list-item>
+</mat-list>

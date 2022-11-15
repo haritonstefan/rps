@@ -1,1 +1,9 @@
-<p>auth works!</p>
+<div class='auth'>
+  <form [formGroup]="loginForm" (ngSubmit)='login()'>
+    <mat-form-field appearance='fill'>
+      <mat-label>Player name</mat-label>
+      <input matInput placeholder='Player name' [formControlName]="'username'" />
+    </mat-form-field>
+    <button mat-button color='accent' type='submit'>Accent</button>
+  </form>
+</div>

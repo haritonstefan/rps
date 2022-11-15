@@ -1,6 +1,10 @@
 import * as mongo from 'mongodb';
 import { Injectable } from '@nestjs/common';
-import { LoginDto } from './dto/login.dto';
+import {
+  LoginDto,
+  LoginResponseDto,
+  LoginValidateResponseDto,
+} from './dto/login.dto';
 import { InjectCollection } from 'nest-mongodb';
 import { ObjectId } from 'mongodb';
 
@@ -11,7 +15,7 @@ export class AuthService {
     private readonly playerCollection: mongo.Collection,
   ) {}
 
-  async login(loginDto: LoginDto): Promise<string> {
+  async login(loginDto: LoginDto): Promise<LoginResponseDto> {
     let player = await this.playerCollection.findOne({
       username: loginDto.username,
     });
@@ -25,16 +29,16 @@ export class AuthService {
       });
     }
 
-    return player._id.toString();
+    return { token: player._id.toString() };
   }
 
-  async validate(id: string) {
-    if (!ObjectId.isValid(id)) return false;
+  async validate(id: string): Promise<LoginValidateResponseDto> {
+    if (!ObjectId.isValid(id)) return { isValid: false };
 
     const count = await this.playerCollection.countDocuments({
       _id: new ObjectId(id),
     });
 
-    return count === 1;
+    return { isValid: count === 1 };
   }
 }

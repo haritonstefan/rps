@@ -1,0 +1,12 @@
+<p>main-view works!</p>
+<mat-grid-list cols='3'>
+  <mat-grid-tile>
+    <app-create-match [matchCreated]='matchCreated'></app-create-match>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <app-list-matches style='flex-grow: 1' [matchCreated]='matchCreated'></app-list-matches>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <p>3</p>
+  </mat-grid-tile>
+</mat-grid-list>

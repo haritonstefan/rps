@@ -1,3 +1,10 @@
 export { LoginDto } from './models/login-dto';
+export { LoginResponseDto } from './models/login-response-dto';
+export { LoginValidateResponseDto } from './models/login-validate-response-dto';
 export { Element } from './models/element';
-export { Game } from './models/game';
+export { GameModel } from './models/game-model';
+export { CreateMatchDto } from './models/create-match-dto';
+export { TurnModel } from './models/turn-model';
+export { RoundModel } from './models/round-model';
+export { MatchModel } from './models/match-model';
+export { SubmitMoveDto } from './models/submit-move-dto';

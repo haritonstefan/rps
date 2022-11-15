@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import { InjectCollection } from 'nest-mongodb';
-import { Game } from './dto/game';
+import { GameModel } from './models/game.model';
 
 @Injectable()
 export class GameService {
@@ -11,6 +11,6 @@ export class GameService {
   ) {}
 
   listGames() {
-    return this.gameCollection.find<Game>({}).toArray();
+    return this.gameCollection.find<GameModel>({}).toArray();
   }
 }

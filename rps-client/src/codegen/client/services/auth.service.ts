@@ -10,6 +10,8 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { LoginDto } from '../models/login-dto';
+import { LoginResponseDto } from '../models/login-response-dto';
+import { LoginValidateResponseDto } from '../models/login-validate-response-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +39,7 @@ export class AuthService extends BaseService {
     context?: HttpContext
     body: LoginDto
   }
-): Observable<StrictHttpResponse<void>> {
+): Observable<StrictHttpResponse<LoginResponseDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, AuthService.AuthControllerLoginPath, 'post');
     if (params) {
@@ -45,13 +47,13 @@ export class AuthService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*',
+      responseType: 'json',
+      accept: 'application/json',
       context: params?.context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+        return r as StrictHttpResponse<LoginResponseDto>;
       })
     );
   }
@@ -66,10 +68,58 @@ export class AuthService extends BaseService {
     context?: HttpContext
     body: LoginDto
   }
-): Observable<void> {
+): Observable<LoginResponseDto> {
 
     return this.authControllerLogin$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
+      map((r: StrictHttpResponse<LoginResponseDto>) => r.body as LoginResponseDto)
+    );
+  }
+
+  /**
+   * Path part for operation authControllerValidate
+   */
+  static readonly AuthControllerValidatePath = '/auth/validate';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `authControllerValidate()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  authControllerValidate$Response(params?: {
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<LoginValidateResponseDto>> {
+
+    const rb = new RequestBuilder(this.rootUrl, AuthService.AuthControllerValidatePath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<LoginValidateResponseDto>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `authControllerValidate$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  authControllerValidate(params?: {
+    context?: HttpContext
+  }
+): Observable<LoginValidateResponseDto> {
+
+    return this.authControllerValidate$Response(params).pipe(
+      map((r: StrictHttpResponse<LoginValidateResponseDto>) => r.body as LoginValidateResponseDto)
     );
   }
 

@@ -16,8 +16,15 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": ""
+                    "default": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponseDto"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -25,9 +32,9 @@
                 ]
             }
         },
-        "/game": {
+        "/auth/validate": {
             "get": {
-                "operationId": "GameController_listGames",
+                "operationId": "AuthController_validate",
                 "parameters": [],
                 "responses": {
                     "default": {
@@ -35,7 +42,35 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Game"
+                                    "$ref": "#/components/schemas/LoginValidateResponseDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/game": {
+            "get": {
+                "operationId": "GameController_listGames",
+                "summary": "",
+                "description": "Lists the possible game types",
+                "parameters": [],
+                "responses": {
+                    "default": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GameModel"
                                 }
                             }
                         }
@@ -43,6 +78,174 @@
                 },
                 "tags": [
                     "game"
+                ]
+            }
+        },
+        "/game/match": {
+            "post": {
+                "operationId": "MatchController_createMatch",
+                "summary": "",
+                "description": "Creates a new match.",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateMatchDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "game",
+                    "match"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "get": {
+                "operationId": "MatchController_getUserMatches",
+                "summary": "",
+                "description": "Retrieves the list of matches where the user is involved.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/MatchModel"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "game",
+                    "match"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/game/match/{id}": {
+            "get": {
+                "operationId": "MatchController_getMatch",
+                "summary": "",
+                "description": "Retrieves an existing match.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MatchModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "game",
+                    "match"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "patch": {
+                "operationId": "MatchController_joinMatch",
+                "summary": "",
+                "description": "Joins an existing match.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "game",
+                    "match"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "MatchController_submitMove",
+                "summary": "",
+                "description": "Submit the player's move",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubmitMoveDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "game",
+                    "match"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
                 ]
             }
         }
@@ -56,6 +259,14 @@
     "tags": [],
     "servers": [],
     "components": {
+        "securitySchemes": {
+            "bearer": {
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "name": "JWT Auth",
+                "type": "http"
+            }
+        },
         "schemas": {
             "LoginDto": {
                 "type": "object",
@@ -68,25 +279,44 @@
                     "username"
                 ]
             },
+            "LoginResponseDto": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "token"
+                ]
+            },
+            "LoginValidateResponseDto": {
+                "type": "object",
+                "properties": {
+                    "isValid": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "isValid"
+                ]
+            },
             "Element": {
                 "type": "object",
                 "properties": {
                     "name": {
                         "type": "string"
                     },
-                    "beats": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
+                    "index": {
+                        "type": "number"
                     }
                 },
                 "required": [
                     "name",
-                    "beats"
+                    "index"
                 ]
             },
-            "Game": {
+            "GameModel": {
                 "type": "object",
                 "properties": {
                     "_id": {
@@ -100,12 +330,115 @@
                         "items": {
                             "$ref": "#/components/schemas/Element"
                         }
+                    },
+                    "maxPlayers": {
+                        "type": "number"
                     }
                 },
                 "required": [
                     "_id",
                     "name",
-                    "elements"
+                    "elements",
+                    "maxPlayers"
+                ]
+            },
+            "CreateMatchDto": {
+                "type": "object",
+                "properties": {
+                    "gameType": {
+                        "type": "string"
+                    },
+                    "rounds": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "gameType",
+                    "rounds"
+                ]
+            },
+            "TurnModel": {
+                "type": "object",
+                "properties": {
+                    "playerId": {
+                        "type": "string"
+                    },
+                    "element": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "playerId",
+                    "element"
+                ]
+            },
+            "RoundModel": {
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "type": "number"
+                    },
+                    "turns": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TurnModel"
+                        }
+                    },
+                    "isTie": {
+                        "type": "boolean"
+                    },
+                    "winnerId": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "number",
+                    "turns",
+                    "winnerId"
+                ]
+            },
+            "MatchModel": {
+                "type": "object",
+                "properties": {
+                    "roundCount": {
+                        "type": "number"
+                    },
+                    "gameTypeId": {
+                        "type": "string"
+                    },
+                    "createdById": {
+                        "type": "string"
+                    },
+                    "rounds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RoundModel"
+                        }
+                    },
+                    "players": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "roundCount",
+                    "gameTypeId",
+                    "createdById",
+                    "rounds",
+                    "players"
+                ]
+            },
+            "SubmitMoveDto": {
+                "type": "object",
+                "properties": {
+                    "move": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "move"
                 ]
             }
         }

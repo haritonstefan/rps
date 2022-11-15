@@ -25,6 +25,7 @@ async function generateClient() {
     dereference: { circular: false },
   });
 
+  fs.rmdirSync(clientPath, { recursive: true });
   const ngOpenGen = new NgOpenApiGen(openApi, options);
   ngOpenGen.generate();
 }

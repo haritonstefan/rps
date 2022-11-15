@@ -6,6 +6,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AuthService } from './services/auth.service';
 import { GameService } from './services/game.service';
+import { MatchService } from './services/match.service';
 
 /**
  * Module that provides all services and configuration.
@@ -17,6 +18,7 @@ import { GameService } from './services/game.service';
   providers: [
     AuthService,
     GameService,
+    MatchService,
     ApiConfiguration
   ],
 })

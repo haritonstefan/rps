@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../codegen/client/services/auth.service';
-import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -10,11 +10,9 @@ import { firstValueFrom } from 'rxjs';
 export class AppComponent implements OnInit {
   title = 'rps-client';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit(): void {
-    firstValueFrom(
-      this.authService.authControllerLogin({ body: { username: 'User1' } })
-    ).then(console.log);
+  async ngOnInit(): Promise<void> {
+    await this.router.navigate(['auth']);
   }
 }

@@ -1,7 +1,11 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { LoginDto } from './dto/login.dto';
+import {
+  LoginDto,
+  LoginResponseDto,
+  LoginValidateResponseDto,
+} from './dto/login.dto';
 import { AuthService } from './auth.service';
-import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { User } from '../decorators/user.decorator';
 
 @ApiTags('auth')
@@ -10,13 +14,15 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/login')
-  public login(@Body() loginDto: LoginDto) {
+  @ApiResponse({ type: LoginResponseDto })
+  public login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
     return this.authService.login(loginDto);
   }
 
   @ApiSecurity('bearer')
+  @ApiResponse({ type: LoginValidateResponseDto })
   @Get('/validate')
-  public validate(@User() user: string): Promise<boolean> {
+  public validate(@User() user: string): Promise<LoginValidateResponseDto> {
     return this.authService.validate(user);
   }
 }

@@ -3,6 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { MongoModule } from 'nest-mongodb';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GameModule } from './game/game.module';
+import { MatchModule } from './match/match.module';
 import MongoConfigFactory from './mongo-config.factory';
 
 @Module({
@@ -15,6 +16,7 @@ import MongoConfigFactory from './mongo-config.factory';
     }),
     AuthModule,
     GameModule,
+    MatchModule,
   ],
   controllers: [],
   providers: [],

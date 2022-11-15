@@ -1,26 +1,27 @@
 import { MongoClient } from 'mongodb';
 import { ISeed } from './i.seed';
-import { Game } from '../game/dto/game';
+import { GameModel } from '../game/models/game.model';
 
 export default class GameSeed implements ISeed {
   public async run(client: MongoClient): Promise<void> {
     await client
       .db('rps')
-      .collection<Game>('games')
+      .collection<GameModel>('games')
       .insertOne({
         name: 'Rock Paper Scissors',
+        maxPlayers: 2,
         elements: [
           {
             name: 'Rock',
-            beats: ['Scissors'],
+            index: 0,
           },
           {
             name: 'Paper',
-            beats: ['Rock'],
+            index: 1,
           },
           {
             name: 'Scissors',
-            beats: ['Paper'],
+            index: 2,
           },
         ],
       });
