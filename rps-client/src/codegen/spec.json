@@ -70,7 +70,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GameModel"
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GameModel"
+                                    }
                                 }
                             }
                         }
@@ -248,6 +251,38 @@
                     }
                 ]
             }
+        },
+        "/game/match/joinable": {
+            "get": {
+                "operationId": "MatchController_getJoinAbleMatches",
+                "summary": "",
+                "description": "Retrieves a list of matches that could be joined",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/MatchModel"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "game",
+                    "match"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
         }
     },
     "info": {
@@ -400,6 +435,9 @@
             "MatchModel": {
                 "type": "object",
                 "properties": {
+                    "_id": {
+                        "type": "string"
+                    },
                     "roundCount": {
                         "type": "number"
                     },
@@ -423,6 +461,7 @@
                     }
                 },
                 "required": [
+                    "_id",
                     "roundCount",
                     "gameTypeId",
                     "createdById",

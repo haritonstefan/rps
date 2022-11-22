@@ -13,6 +13,7 @@ export class ListMatchesComponent implements OnInit {
 
   stopPolling: Subject<null> = new Subject();
   @Input() matchCreated!: EventEmitter<null>;
+  opened: boolean = false;
 
   constructor(private matchService: MatchService) {}
 
@@ -30,9 +31,15 @@ export class ListMatchesComponent implements OnInit {
 
   private retrieveCurrentMatches() {
     this.matchList = timer(1, 3000).pipe(
-      switchMap(() => this.matchService.matchControllerGetUserMatches()),
+      switchMap(() => {
+        return this.matchService.matchControllerGetUserMatches();
+      }),
       share(),
       takeUntil(this.stopPolling)
     );
+  }
+
+  public trackByFn(index: number, item: MatchModel) {
+    return item._id;
   }
 }

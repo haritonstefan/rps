@@ -36,6 +36,7 @@ export class MatchService {
       createdById: userOId,
       roundCount: payload.rounds,
       players: [userOId],
+      rounds: [{ turns: [], number: 0, winnerId: 'none' }],
     });
   }
 
@@ -126,6 +127,10 @@ export class MatchService {
 
     const matchWithGame = await this.getMatchWithGame(matchOId, userOId);
 
+    if (matchWithGame.players.length < matchWithGame.game.maxPlayers) {
+      throw new UnprocessableEntityException('Need more players to join');
+    }
+
     if (matchWithGame.players.find((player) => userOId == player)) {
       throw new BadRequestException(
         'This player did not join this game element supplied',
@@ -142,27 +147,20 @@ export class MatchService {
 
     const lastRound = matchWithGame.rounds.at(-1);
 
-    if (
-      lastRound.turns.find((turn) => turn.playerId == userId) &&
-      lastRound.turns.length < matchWithGame.players.length
-    ) {
+    if (lastRound.turns.find((turn) => turn.playerId.toString() == userId)) {
       throw new ConflictException("It's not you turn now.");
     }
 
     const updateOp = await this.matchCollection.updateOne(
       {
         _id: matchOId,
-        rounds: {
-          number: lastRound.number,
+        'rounds.number': lastRound.number,
+      },
+      {
+        $push: {
+          'rounds.$.turns': <TurnModel>{ element: move, playerId: userId },
         },
       },
-      [
-        {
-          $push: {
-            'rounds.$.turns': <TurnModel>{ element: move, playerId: userId },
-          },
-        },
-      ],
     );
 
     if (updateOp.modifiedCount != 1) {
@@ -170,6 +168,10 @@ export class MatchService {
     }
 
     const match = await this.matchCollection.findOne({ _id: matchOId });
+
+    if (match.rounds.at(-1).turns.length != match.players.length) {
+      return;
+    }
 
     const roundResult = this.evaluateWinner(match.rounds.at(-1));
 
@@ -184,6 +186,9 @@ export class MatchService {
         $set: {
           'rounds.$.isTie': roundResult.isTie,
           'rounds.$.winnerId': roundResult.winnerId,
+        },
+        $push: {
+          rounds: { number: lastRound.number + 1, winnerId: 'none', turns: [] },
         },
       },
     );
@@ -239,9 +244,38 @@ export class MatchService {
         foreignField: '_id',
         as: 'game',
       })
-      .unwind({ path: 'game' })
+      .unwind({ path: '$game' })
       .toArray();
 
     return matches.pop();
+  }
+
+  public async getJoinAbleMatches(userId: string) {
+    const userOId = new ObjectId(userId);
+
+    console.log(userOId);
+    return this.matchCollection
+      .aggregate()
+      .match({
+        $or: [
+          {
+            createdById: { $ne: userOId },
+          },
+          {
+            players: { $ne: userOId },
+          },
+        ],
+      })
+      .lookup({
+        from: 'games',
+        localField: 'gameTypeId',
+        foreignField: '_id',
+        as: 'game',
+      })
+      .unwind({ path: '$game' })
+      .match({
+        maxPlayers: { $lt: { $size: '$players' } },
+      })
+      .toArray();
   }
 }

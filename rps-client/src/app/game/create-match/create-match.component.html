@@ -1,20 +1,22 @@
-<p>create-game works!</p>
-<form class='new-game-form' [formGroup]='newGameForm' (ngSubmit)='onFormSubmit()'>
-  <mat-form-field appearance='fill'>
-    <label for='gameType'>Game Type: </label>
-    <mat-select id='gameType' [formControl]="newGameForm.controls.rounds" [compareWith]='compareFn'>
-      <mat-option *ngFor='let gt of availableGameTypes | async' [value]='gt._id'>
-        {{ gt.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field appearance='fill'>
-    <label for='rounds'>Rounds: </label>
-    <mat-select id='rounds' [formControl]='newGameForm.controls.rounds'>
-      <mat-option *ngFor='let round of availableRoundsCounts' [value]='round'>
-        {{round}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <button mat-button color='accent' type='submit'> Create</button>
-</form>
+<div class='app-create-match'>
+  <form class='create-match-form' [formGroup]='newGameForm' (ngSubmit)='onFormSubmit()'>
+    <mat-form-field appearance='fill'>
+      <label for='gameType'>Game Type: </label>
+      <mat-select id='gameType' [formControl]='newGameForm.controls.rounds' [compareWith]='compareFn'>
+        <mat-option *ngFor='let gt of availableGameTypes | async' [value]='gt._id'>
+          {{ gt.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance='fill'>
+      <label for='rounds'>Rounds: </label>
+      <mat-select id='rounds' [formControl]='newGameForm.controls.rounds'>
+        <mat-option *ngFor='let round of availableRoundsCounts' [value]='round'>
+          {{round}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button color='accent' type='submit'> Create</button>
+  </form>
+
+</div>

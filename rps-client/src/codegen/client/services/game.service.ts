@@ -41,7 +41,7 @@ export class GameService extends BaseService {
   gameControllerListGames$Response(params?: {
     context?: HttpContext
   }
-): Observable<StrictHttpResponse<GameModel>> {
+): Observable<StrictHttpResponse<Array<GameModel>>> {
 
     const rb = new RequestBuilder(this.rootUrl, GameService.GameControllerListGamesPath, 'get');
     if (params) {
@@ -54,7 +54,7 @@ export class GameService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<GameModel>;
+        return r as StrictHttpResponse<Array<GameModel>>;
       })
     );
   }
@@ -70,10 +70,10 @@ export class GameService extends BaseService {
   gameControllerListGames(params?: {
     context?: HttpContext
   }
-): Observable<GameModel> {
+): Observable<Array<GameModel>> {
 
     return this.gameControllerListGames$Response(params).pipe(
-      map((r: StrictHttpResponse<GameModel>) => r.body as GameModel)
+      map((r: StrictHttpResponse<Array<GameModel>>) => r.body as Array<GameModel>)
     );
   }
 
@@ -349,6 +349,58 @@ export class GameService extends BaseService {
 
     return this.matchControllerJoinMatch$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation matchControllerGetJoinAbleMatches
+   */
+  static readonly MatchControllerGetJoinAbleMatchesPath = '/game/match/joinable';
+
+  /**
+   * Retrieves a list of matches that could be joined
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `matchControllerGetJoinAbleMatches()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  matchControllerGetJoinAbleMatches$Response(params?: {
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<Array<MatchModel>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, GameService.MatchControllerGetJoinAbleMatchesPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<MatchModel>>;
+      })
+    );
+  }
+
+  /**
+   * Retrieves a list of matches that could be joined
+   *
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `matchControllerGetJoinAbleMatches$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  matchControllerGetJoinAbleMatches(params?: {
+    context?: HttpContext
+  }
+): Observable<Array<MatchModel>> {
+
+    return this.matchControllerGetJoinAbleMatches$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<MatchModel>>) => r.body as Array<MatchModel>)
     );
   }
 

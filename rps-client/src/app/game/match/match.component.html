@@ -1,0 +1,21 @@
+<div class='match'>
+  <p>{{match._id}}</p>
+  <mat-accordion>
+    <mat-expansion-panel (opened)='opened = true' (closed)='opened = false'>
+      <mat-expansion-panel-header>
+        <h4><i class='fas fa-xs fa-info-circle'></i>
+          {{match._id}}
+        </h4>
+      </mat-expansion-panel-header>
+      <div>
+        <p *ngFor='let round of match.rounds'>
+          {{round.winnerId}}
+        </p>
+      </div>
+      <div>
+        <button mat-raised-button *ngFor='let element of game.elements'
+                (click)='submit(element.index)'>{{element.name}}</button>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

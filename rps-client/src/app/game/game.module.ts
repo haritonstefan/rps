@@ -12,11 +12,19 @@ import { MatInputModule } from '@angular/material/input';
 import { ListMatchesComponent } from './list-matches/list-matches.component';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatchComponent } from './match/match.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatchHistoryComponent } from './match-history/match-history.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { GameDataService } from './game-data.service';
+import { JoinMatchComponent } from './join-match/join-match.component';
 
 @NgModule({
   imports: [
     RouterModule.forChild(routes),
     CommonModule,
+    BrowserAnimationsModule,
     ReactiveFormsModule,
     MatInputModule,
     MatGridListModule,
@@ -24,8 +32,18 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     MatListModule,
     MatIconModule,
+    MatExpansionModule,
+    MatRadioModule,
   ],
-  declarations: [CreateMatchComponent, MainViewComponent, ListMatchesComponent],
+  providers: [GameDataService],
+  declarations: [
+    CreateMatchComponent,
+    MainViewComponent,
+    ListMatchesComponent,
+    MatchComponent,
+    MatchHistoryComponent,
+    JoinMatchComponent,
+  ],
   exports: [CreateMatchComponent],
 })
 export class GameModule {}

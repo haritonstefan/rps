@@ -10,7 +10,7 @@ export class GameController {
 
   @Get()
   @ApiOperation({ description: 'Lists the possible game types' })
-  @ApiResponse({ type: GameModel })
+  @ApiResponse({ type: GameModel, isArray: true })
   public async listGames(): Promise<GameModel[]> {
     return this.gameService.listGames();
   }

@@ -8,7 +8,7 @@ More information on each part can be found:
 ### Features
 
 * Dockerized (with a separate user with limited privileges for the needed database only [link](./mongo/init-mongo.js))
-* [Angular Client](rps-client/README.md)
+* [Angular Client](./rps-client/README.md)
 * [NestJS Backend](./rps-back/README.md)
 * Mongodb through the native mongo driver.
 * Swagger api docs found under `/api` route.

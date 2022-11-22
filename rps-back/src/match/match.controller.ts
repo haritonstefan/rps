@@ -58,6 +58,16 @@ export class MatchController {
     return this.matchService.getUserMatches(userId);
   }
 
+  @Get('/joinable')
+  @ApiOperation({
+    description: 'Retrieves a list of matches that could be joined',
+  })
+  @ApiOkResponse({ type: MatchModel, isArray: true })
+  public async getJoinAbleMatches(@User() userId: string) {
+    console.log(userId);
+    return this.matchService.getJoinAbleMatches(userId);
+  }
+
   @Patch('/:id')
   @ApiOperation({
     description: 'Joins an existing match.',

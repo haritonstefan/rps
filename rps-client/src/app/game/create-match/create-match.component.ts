@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { GameService } from '../../../codegen/client/services/game.service';
 import { Observable } from 'rxjs';
 import { MatchService } from '../../../codegen/client/services/match.service';
+import { GameDataService } from '../game-data.service';
 
 @Component({
   selector: 'app-create-match',
@@ -21,12 +21,12 @@ export class CreateMatchComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private gameService: GameService,
+    private gameDataService: GameDataService,
     private matchService: MatchService
   ) {}
 
   ngOnInit(): void {
-    this.availableGameTypes = this.gameService.gameControllerListGames();
+    this.availableGameTypes = this.gameDataService.getGames();
     this.availableGameTypes.subscribe((game) => {
       this.newGameForm.controls.gameType.setValue(game[0]._id);
     });

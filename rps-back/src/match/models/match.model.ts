@@ -6,6 +6,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { GameModel } from '../../game/models/game.model';
 
 export class MatchModel {
+  @IsString()
+  @ApiProperty({ type: String })
+  _id: string | ObjectId;
+
   @IsNumber()
   @ApiProperty({ type: Number })
   roundCount: number;
